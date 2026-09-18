@@ -150,13 +150,14 @@ Este banco de dados foi projetado para se conectar com sistemas externos, permit
 
 #### 12. processing_logs
 
-- **Descrição:** Registra o status de processamentos no banco
+- **Descrição:** Registra o status e os detalhes dos processamentos no banco.
 - **Campos:**
-    - id_log (PK, INT): Identificador único do log
-    - id_deliverable (VARCHAR(255), FK): Referência ao entregável relacionado ao log.
-    - status (VARCHAR(45)): Status do processamento (e.g., "Recebido", "Processado", "Erro").
-    - menssage (TEXT): Mensagem de erro ou detalhe do processamento.
-    - processing_date (DATETIME): Data e hora do registro.
+    - `id_log` (PK, INT, AUTO_INCREMENT): Identificador único do log.
+    - `id_deliverable` (VARCHAR(255), permite NULL): Identificador do entregável associado ao log; pode ser NULL em execuções sem entregável específico.
+    - `id_feedback` (VARCHAR(45), permite NULL): Identificador da avaliação relacionada ao processamento, quando disponível.
+    - `processing_date` (DATETIME, obrigatório): Data e hora do registro.
+    - `status` (VARCHAR(45), permite NULL): Status informado pela rotina de processamento.
+    - `message` (TEXT, permite NULL): Mensagem de erro ou detalhe do processamento.
 
 ## Relacionamentos Chave
 

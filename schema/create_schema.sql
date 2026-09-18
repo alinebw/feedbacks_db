@@ -250,9 +250,10 @@ CREATE TABLE `answers` (
 DROP TABLE IF EXISTS `processing_logs`;
 CREATE TABLE `processing_logs` (
   `id_log` int NOT NULL AUTO_INCREMENT,
-  `id_deliverable` int NOT NULL,
+  `id_deliverable` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `id_feedback` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `processing_date` datetime NOT NULL,
-  `status` enum('PROCESSED','RECEIVED','RESPONSES_CAST','DATA_COPIED','DATA_SENT','ERROR') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `status` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `message` text COLLATE utf8mb4_unicode_ci,
   PRIMARY KEY (`id_log`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
