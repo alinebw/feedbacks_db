@@ -65,20 +65,21 @@ BEGIN
     JOIN prod.TBL_project_full pf
         ON CAST(pf.id AS CHAR(45)) COLLATE utf8mb4_unicode_ci = p.id_project
     SET 
-        p.name_project = TRIM(CONVERT(pf.title USING utf8mb4)) COLLATE utf8mb4_unicode_ci,
-        p.name_department = TRIM(CONVERT(pf.Area USING utf8mb4)) COLLATE utf8mb4_unicode_ci
+        p.name_project = TRIM(CONVERT(pf.title USING utf8mb4)) COLLATE utf8mb4_unicode_ci
     WHERE pf.id IS NOT NULL
       AND p.id_project IS NOT NULL;
       
 
-    -- Inserts new departments into the departments table
-    INSERT IGNORE INTO departments (name_department)
-    SELECT DISTINCT 
-        LEFT(TRIM(CONVERT(pf.Area USING utf8mb4)), 500) COLLATE utf8mb4_unicode_ci AS name_department
-    FROM prod.TBL_project_full pf
-    JOIN projects p
-        ON CAST(pf.id AS CHAR(45)) COLLATE utf8mb4_unicode_ci = p.id_project
-    WHERE pf.Area IS NOT NULL;
+    -- BU synchronization is not performed by this version.
+    -- Reported production evidence: sp_atualiza_dados_de_pmo, step 8,
+    -- reads business_unit(project_id, name), joins project_id (cast to CHAR(45),
+    -- utf8mb4_unicode_ci) to projetos.id_projeto and excludes empty TRIM(name).
+    -- PMO is external and managed by another team; its DDL is outside this scope.
+    -- This observed query is the only source reference. Confirm types, name
+    -- lengths/collation, cardinality and identity mapping before importing into
+    -- departments/projects_departments. Do not assume a BU ID or unique project_id,
+    -- silently truncate names to VARCHAR(45), or delete links without a
+    -- reconciliation contract. TBL_project_full is used only for the project name.
 
 
     -- Logs to identify the point of error

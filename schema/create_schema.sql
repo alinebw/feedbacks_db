@@ -54,6 +54,7 @@ CREATE TABLE `departments` (
   `id_department` int unsigned NOT NULL AUTO_INCREMENT,
   `name_department` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `csat_department` decimal(5,2) DEFAULT NULL,
+  `nps_department` decimal(5,2) DEFAULT NULL,
   `percent_promoters` decimal(5,2) DEFAULT NULL COMMENT 'Percent of promoters in the department',
   `percent_neutrals` decimal(5,2) DEFAULT NULL COMMENT 'Percent of neutrals in the department',
   `percent_detractors` decimal(5,2) DEFAULT NULL COMMENT 'Percent of detractors in the department',
@@ -95,6 +96,7 @@ CREATE TABLE `customers` (
   `name_customer` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `name_department` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `csat_customer` decimal(5,2) DEFAULT NULL,
+  `nps_customer` decimal(5,2) DEFAULT NULL,
   `percent_promoters` decimal(5,2) DEFAULT NULL COMMENT 'Percent of promoters for the customer',
   `percent_neutrals` decimal(5,2) DEFAULT NULL COMMENT 'Percent of neutrals for the customer',
   `percent_detractors` decimal(5,2) DEFAULT NULL COMMENT 'Percent of detractors for the customer',
@@ -114,16 +116,25 @@ CREATE TABLE `projects` (
   `id_project` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
   `name_project` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `csat_project` decimal(5,2) DEFAULT NULL,
-  `name_department` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `nps_project` decimal(5,2) DEFAULT NULL,
   `percent_promoters` decimal(5,2) DEFAULT NULL COMMENT 'Percent of promoters in the project',
   `percent_neutrals` decimal(5,2) DEFAULT NULL COMMENT 'Percent of neutrals in the project',
   `percent_detractors` decimal(5,2) DEFAULT NULL COMMENT 'Percent of detractors in the project',
   PRIMARY KEY (`id_project`),
-  KEY `idx_projects_name_department` (`name_department`),
   KEY `idx_projects_csat_project` (`csat_project`),
-  KEY `idx_projects_namedepartment_idproject` (`name_department`, `id_project`),
-  KEY `idx_projects_name_project` (`name_project`),
-  CONSTRAINT `fk_projects_name_department` FOREIGN KEY (`name_department`) REFERENCES `departments` (`name_department`)
+  KEY `idx_projects_name_project` (`name_project`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Table structure for table `projects_departments`
+-- Created after both parent tables; one row per project/department pair.
+DROP TABLE IF EXISTS `projects_departments`;
+CREATE TABLE `projects_departments` (
+  `id_project` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id_department` int unsigned NOT NULL,
+  PRIMARY KEY (`id_project`, `id_department`),
+  KEY `idx_projects_departments_department` (`id_department`),
+  CONSTRAINT `fk_projects_departments_project` FOREIGN KEY (`id_project`) REFERENCES `projects` (`id_project`),
+  CONSTRAINT `fk_projects_departments_department` FOREIGN KEY (`id_department`) REFERENCES `departments` (`id_department`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
